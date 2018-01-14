@@ -25,7 +25,7 @@ public class MessageProcessorTest {
 	@Deployment
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class, "jmsservice.war")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addClass(FuseMessage.class);
+				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addClass(FooMessage.class);
 	}
 
 	@Resource(mappedName = "/jms/queue/test")
@@ -47,12 +47,12 @@ public class MessageProcessorTest {
 
 			connection.start();
 
-			Message request = session.createObjectMessage(new FuseMessage());
+			Message request = session.createObjectMessage(new FooMessage());
 
 			producer.send(request);
 			Message response = consumer.receive(5 * 1000);
 			assertNotNull(response);
-			FuseMessage responseBody = ((ObjectMessage) response).getBody(FuseMessage.class);
+			FooMessage responseBody = ((ObjectMessage) response).getBody(FooMessage.class);
 			assertEquals("knock, knock!", responseBody.payload);
 		} finally {
 			if (connection != null) {
